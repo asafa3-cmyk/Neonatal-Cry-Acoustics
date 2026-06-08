@@ -1,0 +1,22 @@
+# Local Python environments
+.venv/
+venv/
+env/
+
+# Python caches
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Jupyter and local runtime files
+.ipynb_checkpoints/
+.matplotlib-cache/
+
+# macOS system files
+.DS_Store
+
+# Local secrets and editor files
+.env
+.env.*
+.vscode/
+.idea/

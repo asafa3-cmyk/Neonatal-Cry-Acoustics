@@ -1,0 +1,6 @@
+filename,P(Normal),P(Borderline),P(High-Risk),state_id,Clinical Flag,true_label,true_risk
+643D64AD-B711-469A-AF69-55C0D5D3E30F-1430138536-1.0-m-72-bp.wav,0.45,0.43,0.12,2,Borderline–Suspicious,belly_pain,3
+7A864194-4B6B-4850-ABBF-0C2A8170107B-1436846915-1.1-f-26-bu.wav,0.265,0.193,0.542,3,High-Risk,burping,2
+1309B82C-F146-46F0-A723-45345AFA6EA8-1430703937-1.0-f-48-dc.wav,0.081,0.267,0.652,3,High-Risk,discomfort,2
+cda99fcf-d010-47b4-8987-f54be313ddbd-1429973787766-1.7-f-26-hu.wav,0.366,0.596,0.038,2,Borderline–Suspicious,hungry,1
+7A22229D-06C2-4AAA-9674-DE5DF1906B3A-1436891944-1.1-m-72-ti.wav,0.16,0.738,0.102,2,Borderline–Suspicious,tired,1
