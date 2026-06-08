@@ -218,11 +218,11 @@ Note: with n=15 training samples, the model mislabels most test samples at both 
 
 Stage / Action Taken: Stage 4 — MVP Deliverable
 
-Clinical or Technical Justification: Assembled the final MVP notebook (`mvp.ipynb`) integrating all four stages into a single top-to-bottom reproducible document. The notebook imports from `models.py` and `classify.py`, displays Stage 2 before/after figures inline, trains both models, shows the comparison, and outputs the 3-state clinical table.
+Clinical or Technical Justification: Assembled the final MVP notebook (`Asaf_Asnin_Neonatal_Cry_AI_MVP.ipynb`) integrating all four stages into a single top-to-bottom reproducible document. The notebook imports from `models.py` and `classify.py`, displays Stage 2 before/after figures inline, trains both models, shows the comparison, and outputs the 3-state clinical table.
 
 Files Created/Modified:
 
-- `mvp.ipynb` (new) — full end-to-end MVP notebook
+- `Asaf_Asnin_Neonatal_Cry_AI_MVP.ipynb` (new) — full end-to-end MVP notebook
 - `models.py` (new) — Stage 3 model comparison module
 - `classify.py` (new) — Stage 3 3-state mapping module
 - `requirements.txt` (updated) — added `xgboost>=2.0`
@@ -250,7 +250,7 @@ Files Created/Modified:
 - `README.md`
 - `requirements.txt`
 - `project_development_log.md`
-- `mvp.ipynb`
+- `Asaf_Asnin_Neonatal_Cry_AI_MVP.ipynb`
 
 Key Outcomes:
 
@@ -317,3 +317,58 @@ Key Outcomes:
 - Created public repository: `https://github.com/asafa3-cmyk/Neonatal-Cry-Acoustics`
 - Pushed local `main` branch to `origin/main`.
 - Public README includes data pipeline visuals and XGBoost model-results evidence.
+
+---
+
+## 2026-06-08 - Final Notebook Polish & Submission Seal
+
+Stage / Action Taken: Stage 4 — MVP Notebook Finalisation for Academic Submission
+
+Clinical or Technical Justification: Polished the MVP notebook for formal academic submission. The notebook was restructured to tell a complete, compelling clinical product story — from problem definition through preprocessing rationale to model selection and 3-state output — with professional markdown throughout. All design decisions (XGBoost primary selection, MLP substitute for 1D CNN, 3 clinical metrics, conservative threshold logic) are explained at the right level of detail for a non-technical reader (nurse, GP) and a technical reviewer (lecturer).
+
+Actions taken:
+- Replaced the generic notebook filename with `Asaf_Asnin_Neonatal_Cry_AI_MVP.ipynb`.
+- Verified and cross-referenced with `README.md` and full `project_development_log.md`.
+- Upgraded all markdown cells: Executive Summary, Stage 1 product spec with user flow + requirements, Stage 2 preprocessing with clinical rationale for each step (pre-emphasis, STFT, MFCC), Stage 3 model selection justification, clinical metrics section with three individually justified metrics, 3-state logic section with threshold rationale, Stage 4 completion checklist.
+- Added author name (Asaf Asnin) to title, figure suptitle, and footer.
+- Added colour-coded 3-state output table (red=High-Risk, yellow=Borderline, green=Normal) via pandas Styler.
+- Explicit 3-state clinical metrics computation cell (sensitivity, specificity, 3-state macro AUC).
+- Side-by-side 5-class + 3-state confusion matrix figure.
+- Generated `figures/06_xgboost_results.png` (3-panel: feature importance, 3-state confusion matrix, clinical metrics bar chart) — referenced in README.
+- Ran forbidden-word scan: CLEAN (zero occurrences of prescriptive clinical terminology throughout).
+
+Files Created/Modified:
+
+- `Asaf_Asnin_Neonatal_Cry_AI_MVP.ipynb` (final author-named notebook)
+- `figures/06_xgboost_results.png` (generated)
+- `data/processed/test_3state_output.csv` (generated on notebook run)
+
+Key Outcomes:
+
+- 19 cells total: 11 code, 8 markdown.
+- Forbidden-word check: CLEAN.
+- All 4 course stages covered with full clinical justification.
+- Notebook runs top-to-bottom in < 2 seconds on laptop CPU, seed 42, fully reproducible.
+- Notebook is submission-ready for the Applied ML in Medicine final project.
+
+---
+
+## 2026-06-08 - Final GitHub Synchronization Sweep
+
+Stage / Action Taken: Repository Synchronization
+
+Clinical or Technical Justification: Synced public-facing documentation with the final author-named notebook so GitHub visitors see the same product structure, notebook filename, modeling evidence, and compliance status that appear in the final submission artifact.
+
+Files Created/Modified:
+
+- `README.md`
+- `project_development_log.md`
+- `Asaf_Asnin_Neonatal_Cry_AI_MVP.ipynb`
+- `figures/06_xgboost_results.png`
+
+Key Outcomes:
+
+- Located the final notebook: `Asaf_Asnin_Neonatal_Cry_AI_MVP.ipynb`.
+- Verified the notebook has 19 cells and no restricted clinical terminology matches.
+- Replaced remaining public documentation references with the final notebook filename.
+- README now explicitly reflects CryFlag, the four course stages, metric rationale, conservative threshold logic, and the submission-ready notebook structure.

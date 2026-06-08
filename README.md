@@ -1,11 +1,11 @@
-# Neonatal Cry Acoustics - Clinical AI Decision Support
+# CryFlag - Neonatal Cry Acoustics Clinical AI Decision Support
 
 ![Python](https://img.shields.io/badge/Python-3.11-blue)
 ![CPU](https://img.shields.io/badge/Training-CPU%20Friendly-green)
 ![Audio](https://img.shields.io/badge/Modality-Neonatal%20Cry%20Audio-purple)
 ![Output](https://img.shields.io/badge/Clinical%20Output-3%20States-orange)
 
-An end-to-end medical AI MVP that transforms neonatal cry recordings into lightweight acoustic features, trains a CPU-friendly XGBoost model, and maps model probabilities into a simple 3-state clinical support output.
+An end-to-end medical AI MVP by **Asaf Asnin** that transforms neonatal cry recordings into lightweight acoustic features, trains a CPU-friendly XGBoost model, and maps model probabilities into a simple 3-state clinical support output.
 
 The goal is not to build a heavy model. The goal is to demonstrate the reasoning and engineering behind a responsible medical AI product: clear clinical framing, reproducible data handling, transparent preprocessing, simple modeling, and cautious user-facing output.
 
@@ -13,7 +13,7 @@ The goal is not to build a heavy model. The goal is to demonstrate the reasoning
 
 Newborn crying can indicate routine needs, mild distress, or stronger pain/stress signals. In busy neonatal care settings, nurses need fast screening support that can help flag cries that may deserve closer attention.
 
-This project explores neonatal cry acoustics as a decision-support tool for screening possible pain/stress patterns from short audio clips.
+**CryFlag** explores neonatal cry acoustics as a decision-support tool for screening possible pain/stress patterns from short audio clips.
 
 Target workflow: **Screening / Decision Support**
 
@@ -36,7 +36,25 @@ The system never presents a bare probability as the final result. It converts mo
 - Two simple models compared on engineered audio features.
 - XGBoost selected as the primary lightweight model.
 - A clinical 3-state output layer designed for screening support.
-- A single MVP notebook that runs top-to-bottom on CPU.
+- A polished author-named MVP notebook that runs top-to-bottom on CPU and documents all four mandated course stages.
+
+## Final Notebook
+
+The main deliverable is:
+
+```text
+Asaf_Asnin_Neonatal_Cry_AI_MVP.ipynb
+```
+
+The notebook is structured as a complete clinical product story:
+
+- **Executive Summary**: CryFlag product overview, target user, input, output, and clinical workflow.
+- **Stage 1**: clinical problem, product specification, user flow, and functional/non-functional requirements.
+- **Stage 2**: dataset source, preprocessing rationale, and before/after visual evidence.
+- **Stage 3**: XGBoost vs. MLP comparison, metric selection, and 3-state threshold logic.
+- **Stage 4**: MVP completion checklist and submission summary.
+
+It contains 19 cells, uses fixed seed `42`, and runs top-to-bottom on a laptop CPU in seconds.
 
 ## Data Source
 
@@ -150,7 +168,7 @@ This conservative design favors nurse review for uncertain cases instead of clea
 ├── preprocess.py                  # Pre-emphasis, STFT, MFCC extraction, figures
 ├── models.py                      # XGBoost and MLP model comparison
 ├── classify.py                    # 3-state clinical output mapping
-├── mvp.ipynb                      # End-to-end final notebook
+├── Asaf_Asnin_Neonatal_Cry_AI_MVP.ipynb  # End-to-end final notebook
 ├── data_report.md                 # Stage 2 data report
 ├── project_development_log.md     # Project journal and technical decisions
 ├── data/
@@ -190,7 +208,7 @@ python preprocess.py
 Open the MVP notebook:
 
 ```bash
-jupyter notebook mvp.ipynb
+jupyter notebook Asaf_Asnin_Neonatal_Cry_AI_MVP.ipynb
 ```
 
 Then run all cells from top to bottom.
