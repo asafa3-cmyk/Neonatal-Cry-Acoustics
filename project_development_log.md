@@ -299,3 +299,21 @@ Key Outcomes:
 - Generated XGBoost result plot with top MFCC feature importances, 3-state confusion matrix, and metric bars.
 - Final MVP test metrics: High-Risk sensitivity `0.00`, High-Risk specificity `0.50`, clinical-state macro AUC `0.33`, 5-class macro AUC `0.45`.
 - README now presents both Stage 2 data pipeline visuals and Stage 3 model-results evidence.
+
+---
+
+## 2026-06-08 - GitHub Publication
+
+Stage / Action Taken: Public Repository Push
+
+Clinical or Technical Justification: Published the MVP as a public GitHub repository so the complete reproducible project can be shared with peers, instructors, and future employers.
+
+Files Created/Modified:
+
+- `project_development_log.md`
+
+Key Outcomes:
+
+- Created public repository: `https://github.com/asafa3-cmyk/Neonatal-Cry-Acoustics`
+- Pushed local `main` branch to `origin/main`.
+- Public README includes data pipeline visuals and XGBoost model-results evidence.
