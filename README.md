@@ -6,12 +6,16 @@
 ![Output](https://img.shields.io/badge/Clinical%20Output-3%20States-orange)
 ![License](https://img.shields.io/badge/License-Academic%20Course%20Project-lightgrey)
 
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/asafa3-cmyk/Neonatal-Cry-Acoustics/blob/main/Asaf_Asnin_Neonatal_Cry_AI_MVP.ipynb)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/asafa3-cmyk/Neonatal-Cry-Acoustics/main?filepath=Asaf_Asnin_Neonatal_Cry_AI_MVP.ipynb)
+
+If the interactive buttons above are slow to start, view the notebook with all outputs already rendered here: [nbviewer](https://nbviewer.org/github/asafa3-cmyk/Neonatal-Cry-Acoustics/blob/main/Asaf_Asnin_Neonatal_Cry_AI_MVP.ipynb).
+
 An end-to-end medical AI MVP by **Asaf Asnin** that transforms neonatal cry recordings into lightweight acoustic features, trains a CPU-friendly XGBoost model, and maps model probabilities into a simple 3-state clinical support output.
 
 The goal is not to build a heavy model. The goal is to demonstrate the reasoning and engineering behind a responsible medical AI product: clear clinical framing, reproducible data handling, transparent preprocessing, simple modeling, and **honest, pre-registered evaluation** — including reporting plainly that this MVP does not yet meet its own success criteria, and explaining exactly why.
 
-> **Live notebook:** [`Asaf_Asnin_Neonatal_Cry_AI_MVP.ipynb`](Asaf_Asnin_Neonatal_Cry_AI_MVP.ipynb) — runs top-to-bottom on CPU in seconds. If GitHub's inline preview is slow to render (~2 MB, 30 cells with embedded figures), open it instead via nbviewer:
-> **[https://nbviewer.org/github/asafa3-cmyk/Neonatal-Cry-Acoustics/blob/main/Asaf_Asnin_Neonatal_Cry_AI_MVP.ipynb](https://nbviewer.org/github/asafa3-cmyk/Neonatal-Cry-Acoustics/blob/main/Asaf_Asnin_Neonatal_Cry_AI_MVP.ipynb)**
+> **Live notebook:** [`Asaf_Asnin_Neonatal_Cry_AI_MVP.ipynb`](Asaf_Asnin_Neonatal_Cry_AI_MVP.ipynb) — the first cell auto-clones this repo and installs dependencies if run on Colab/Binder, then runs top-to-bottom on CPU in seconds.
 
 ## Clinical Problem
 
@@ -60,7 +64,7 @@ The notebook is structured as a complete clinical product story:
 - **Stage 3**: XGBoost vs. MLP vs. Dummy comparison, pre-registered success criteria, multi-seed stability sweep, metric selection, 3-state threshold logic, error analysis, and a robustness check.
 - **Stage 4**: MVP completion checklist and an honest, unsoftened results summary.
 
-It contains 30 cells, uses fixed seed `42` as the primary reproducible run, and runs top-to-bottom on a laptop CPU in seconds.
+It contains 31 cells (the first is a Colab/Binder setup cell that clones the repo and installs dependencies only if needed — it's a no-op when run locally inside an already-cloned repo), uses fixed seed `42` as the primary reproducible run, and runs top-to-bottom on a laptop CPU in seconds.
 
 ## Data Source
 
@@ -248,7 +252,7 @@ Classifies general infant cry causes (discomfort, hunger, sickness) using time-d
 
 ```text
 .
-├── Asaf_Asnin_Neonatal_Cry_AI_MVP.ipynb   # End-to-end final notebook (30 cells)
+├── Asaf_Asnin_Neonatal_Cry_AI_MVP.ipynb   # End-to-end final notebook (31 cells, incl. Colab/Binder setup cell)
 ├── data_loader.py                         # Download/sample WAV files and create metadata
 ├── preprocess.py                          # Pre-emphasis, STFT, MFCC, normalization, resampling check, figures
 ├── models.py                              # XGBoost, MLP, Dummy baseline, seed-sweep comparison
@@ -257,6 +261,7 @@ Classifies general infant cry causes (discomfort, hunger, sickness) using time-d
 ├── project_development_log.md             # Full project journal and technical decisions
 ├── README.md                              # This file
 ├── requirements.txt                       # Python dependencies
+├── runtime.txt                            # Pins Python 3.11 for Binder builds
 ├── data/
 │   ├── metadata.csv
 │   └── processed/
@@ -283,6 +288,14 @@ Classifies general infant cry causes (discomfort, hunger, sickness) using time-d
 `mvp.ipynb` (an earlier, abandoned duplicate notebook) has been deleted and does not appear in this repository.
 
 ## How To Run
+
+### Option A — Zero install, in your browser
+
+Click **Open in Colab** or **Launch Binder** at the top of this README. The notebook's first cell auto-detects a bare environment, clones this repo if needed, and installs everything from `requirements.txt`. No local setup required.
+
+> **Verification note:** the clone → install → execute flow was verified locally end-to-end (fresh clone into a clean directory, clean virtual environment, `pip install -r requirements.txt`, full notebook execution — zero errors). The actual Colab and Binder *hosted* environments were not opened in a live browser session to click-test, since that requires an authenticated Google session (Colab) and a multi-minute Docker build (Binder) neither of which could be driven headlessly here. Please click both badges once yourself before submitting to confirm live — see the verification notes at the bottom of this section for exactly what was and wasn't checked.
+
+### Option B — Local setup
 
 Create and activate a virtual environment:
 
