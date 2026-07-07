@@ -116,6 +116,106 @@
     word-break: break-all;
   }
 
+  /* --- Model performance metrics --- */
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 14px;
+  }
+
+  .metric-stat {
+    text-align: center;
+    background: #fafcfc;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 10px;
+  }
+
+  .metric-number {
+    font-size: 1.9rem;
+    font-weight: 800;
+    color: var(--navy);
+    font-variant-numeric: tabular-nums;
+    line-height: 1.1;
+  }
+
+  .metric-label {
+    margin-top: 4px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  .metrics-caveat {
+    margin: 14px 0 0;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-style: italic;
+  }
+
+  /* --- Input (audio) representation --- */
+  #input-representation {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #fafcfc;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 10px 14px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+
+  .waveform-icon {
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    height: 28px;
+    flex-shrink: 0;
+  }
+
+  .waveform-icon span {
+    display: block;
+    width: 3px;
+    background: var(--teal-dark);
+    border-radius: 2px;
+  }
+
+  .input-filename {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text);
+    word-break: break-all;
+    flex: 1;
+    min-width: 140px;
+  }
+
+  .play-btn {
+    border: 1px solid var(--teal-dark);
+    background: #fff;
+    color: var(--teal-dark);
+    border-radius: 999px;
+    padding: 6px 14px;
+    font-family: inherit;
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .play-btn:hover { background: rgba(42, 157, 143, 0.10); }
+
+  .play-tooltip {
+    flex-basis: 100%;
+    font-size: 0.76rem;
+    color: var(--text-muted);
+    font-style: italic;
+    display: none;
+  }
+  .play-tooltip.show { display: block; }
+
   /* --- Probability bars --- */
   .prob-row {
     display: grid;
@@ -300,12 +400,32 @@
 <main>
 
   <section class="card">
+    <h2>Model Performance Metrics — held-out test set, n=5</h2>
+    <div class="metrics-grid">
+      <div class="metric-stat">
+        <div class="metric-number" id="metric-sensitivity">0.00</div>
+        <div class="metric-label">Sensitivity (High-Risk)</div>
+      </div>
+      <div class="metric-stat">
+        <div class="metric-number" id="metric-specificity">1.00</div>
+        <div class="metric-label">Specificity (High-Risk)</div>
+      </div>
+      <div class="metric-stat">
+        <div class="metric-number" id="metric-auc">0.39</div>
+        <div class="metric-label">Macro AUC (3-state)</div>
+      </div>
+    </div>
+    <p class="metrics-caveat">These metrics come from a 5-sample held-out test set and are illustrative only — not statistically conclusive (see project limitations).</p>
+  </section>
+
+  <section class="card">
     <h2>1. Select a test-set sample</h2>
     <div id="case-grid"></div>
   </section>
 
   <section class="card">
     <h2>2. Model output for the selected sample</h2>
+    <div id="input-representation"></div>
     <div id="prob-bars"></div>
     <div class="badges">
       <div class="badge badge-truth">
@@ -399,6 +519,21 @@ const SAMPLES = [
 
 const STATE_NAMES = { 1: "1. Normal", 2: "2. Borderline–Suspicious", 3: "3. High-Risk" };
 
+// Real final-model evaluation metrics from the notebook (seed=42 primary run,
+// n=5 held-out test set) — see README.md "Pre-Registered Success Criteria" and
+// project_development_log.md. Not simulated.
+const MODEL_METRICS = {
+  sensitivity: 0.00,
+  specificity: 1.00,
+  macroAuc: 0.39
+};
+
+function renderMetrics() {
+  document.getElementById("metric-sensitivity").textContent = MODEL_METRICS.sensitivity.toFixed(2);
+  document.getElementById("metric-specificity").textContent = MODEL_METRICS.specificity.toFixed(2);
+  document.getElementById("metric-auc").textContent = MODEL_METRICS.macroAuc.toFixed(2);
+}
+
 /*
  * Byte-for-byte behavioral port of classify.py's assign_state():
  *
@@ -446,6 +581,38 @@ function renderCaseGrid() {
   });
 }
 
+// Deterministic pseudo-random bar heights per sample (decorative only —
+// this is NOT a real rendering of the audio waveform, there is no bundled
+// audio file in this static mockup).
+function waveformBarHeights(sample) {
+  const heights = [];
+  let seed = sample.id * 97;
+  for (let i = 0; i < 24; i++) {
+    seed = (seed * 9301 + 49297) % 233280;
+    const rand = seed / 233280;
+    heights.push(6 + Math.round(rand * 22));
+  }
+  return heights;
+}
+
+function renderInputRepresentation(sample) {
+  const container = document.getElementById("input-representation");
+  const bars = waveformBarHeights(sample)
+    .map(h => `<span style="height:${h}px"></span>`)
+    .join("");
+
+  container.innerHTML = `
+    <div class="waveform-icon" aria-hidden="true">${bars}</div>
+    <div class="input-filename">${sample.filename}</div>
+    <button class="play-btn" id="play-sample-btn" type="button">🔊 Play sample</button>
+    <div class="play-tooltip" id="play-tooltip">Audio playback not available in this static mockup — see the live notebook demo for full audio.</div>
+  `;
+
+  document.getElementById("play-sample-btn").addEventListener("click", () => {
+    document.getElementById("play-tooltip").classList.add("show");
+  });
+}
+
 function renderProbBars(sample) {
   const container = document.getElementById("prob-bars");
   const rows = [
@@ -485,6 +652,7 @@ function renderResult() {
 function renderAll() {
   renderCaseGrid();
   const sample = SAMPLES.find(s => s.id === selectedSampleId);
+  renderInputRepresentation(sample);
   renderProbBars(sample);
   renderResult();
 }
@@ -533,6 +701,7 @@ document.getElementById("adjust-btn").addEventListener("click", () => {
   showActionMessage("✏️ Adjust the sliders above, then re-review the recomputed flag.", "#fef3d9", "#8a5c00");
 });
 
+renderMetrics();
 renderAll();
 </script>
 
