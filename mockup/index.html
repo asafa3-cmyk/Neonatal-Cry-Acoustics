@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CryFlag — Acoustic Cry Screening (Interactive Mockup)</title>
+<!-- Single optional external dependency: a webfont only. No JS framework, no build step. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --teal: #2a9d8f;
+    --teal-dark: #028090;
+    --navy: #1E2761;
+    --navy-light: #22577a;
+    --orange: #e76f51;
+    --amber: #f9a825;
+    --red: #e63946;
+    --bg: #f4f7f8;
+    --card-bg: #ffffff;
+    --text: #1f2933;
+    --text-muted: #5b6b73;
+    --border: #e2e8ea;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+  }
+
+  header {
+    background: linear-gradient(120deg, var(--navy) 0%, var(--navy-light) 100%);
+    color: #fff;
+    padding: 28px 24px 24px;
+    text-align: center;
+  }
+
+  header h1 {
+    margin: 0 0 6px;
+    font-size: 1.7rem;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+  }
+
+  header p {
+    margin: 0;
+    font-size: 0.95rem;
+    color: #cfe0e8;
+  }
+
+  main {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 24px 16px 64px;
+  }
+
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px 22px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 10px rgba(30, 39, 97, 0.05);
+  }
+
+  .card h2 {
+    margin: 0 0 12px;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--navy);
+  }
+
+  /* --- Case selector --- */
+  #case-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 10px;
+  }
+
+  .case-btn {
+    border: 2px solid var(--border);
+    background: #fafcfc;
+    border-radius: 12px;
+    padding: 10px 8px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    transition: all 0.15s ease;
+    text-align: center;
+  }
+
+  .case-btn:hover {
+    border-color: var(--teal);
+    color: var(--teal-dark);
+  }
+
+  .case-btn.active {
+    border-color: var(--teal);
+    background: rgba(42, 157, 143, 0.10);
+    color: var(--teal-dark);
+  }
+
+  .case-btn small {
+    display: block;
+    font-weight: 400;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+    word-break: break-all;
+  }
+
+  /* --- Probability bars --- */
+  .prob-row {
+    display: grid;
+    grid-template-columns: 150px 1fr 60px;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+  }
+
+  .prob-track {
+    background: #eef2f3;
+    border-radius: 8px;
+    height: 18px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .prob-fill {
+    height: 100%;
+    border-radius: 8px 0 0 8px;
+    transition: width 0.25s ease;
+  }
+
+  .fill-normal { background: var(--teal); }
+  .fill-borderline { background: var(--amber); }
+  .fill-highrisk { background: var(--red); }
+
+  .prob-value {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  /* --- Ground truth + flag badges --- */
+  .badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 16px;
+  }
+
+  .badge {
+    flex: 1;
+    min-width: 220px;
+    border-radius: 12px;
+    padding: 14px 16px;
+  }
+
+  .badge .label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 700;
+    opacity: 0.75;
+    margin-bottom: 4px;
+  }
+
+  .badge .value {
+    font-size: 1.15rem;
+    font-weight: 800;
+  }
+
+  .badge-truth {
+    background: #eef2f7;
+    border: 1px dashed #9aa7b5;
+    color: var(--navy);
+  }
+
+  .badge-flag-normal   { background: #e3f6ef; color: #0b6b5b; border: 1px solid var(--teal); }
+  .badge-flag-borderline { background: #fef3d9; color: #8a5c00; border: 1px solid var(--amber); }
+  .badge-flag-highrisk { background: #fdecee; color: #a4222c; border: 1px solid var(--red); }
+
+  /* --- Sliders --- */
+  .slider-block { margin-bottom: 18px; }
+
+  .slider-head {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+
+  .slider-head span.value {
+    font-variant-numeric: tabular-nums;
+    color: var(--teal-dark);
+    background: rgba(42, 157, 143, 0.10);
+    padding: 1px 8px;
+    border-radius: 999px;
+  }
+
+  input[type="range"] {
+    width: 100%;
+    accent-color: var(--teal-dark);
+  }
+
+  .slider-hint {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+
+  .reset-btn {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    cursor: pointer;
+  }
+  .reset-btn:hover { border-color: var(--navy-light); color: var(--navy); }
+
+  /* --- Action buttons --- */
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 6px;
+  }
+
+  .action-btn {
+    flex: 1;
+    min-width: 150px;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-family: inherit;
+    font-size: 0.92rem;
+    font-weight: 700;
+    cursor: pointer;
+    color: #fff;
+    transition: filter 0.15s ease;
+  }
+  .action-btn:hover { filter: brightness(1.08); }
+  .action-btn:active { filter: brightness(0.95); }
+
+  .btn-approve { background: var(--teal-dark); }
+  .btn-adjust  { background: var(--navy-light); }
+  .btn-reject  { background: var(--red); }
+
+  #action-message {
+    margin-top: 12px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    display: none;
+  }
+  #action-message.show { display: block; }
+
+  #highlight-target.pulse {
+    animation: pulseGlow 1.4s ease-in-out 2;
+  }
+  @keyframes pulseGlow {
+    0%, 100% { box-shadow: 0 2px 10px rgba(30, 39, 97, 0.05); }
+    50% { box-shadow: 0 0 0 4px rgba(42, 157, 143, 0.35); }
+  }
+
+  footer {
+    text-align: center;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    padding: 8px 24px 32px;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  code { background: #eef2f3; padding: 1px 5px; border-radius: 4px; font-size: 0.85em; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>CryFlag — Acoustic Cry Screening</h1>
+  <p>Interactive clinical mockup: 3-state screening flag, live threshold exploration, and human-in-the-loop review</p>
+</header>
+
+<main>
+
+  <section class="card">
+    <h2>1. Select a test-set sample</h2>
+    <div id="case-grid"></div>
+  </section>
+
+  <section class="card">
+    <h2>2. Model output for the selected sample</h2>
+    <div id="prob-bars"></div>
+    <div class="badges">
+      <div class="badge badge-truth">
+        <div class="label">Ground Truth (corpus label)</div>
+        <div class="value" id="truth-value">—</div>
+      </div>
+      <div class="badge" id="flag-badge">
+        <div class="label">Current Clinical Flag</div>
+        <div class="value" id="flag-value">—</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card" id="highlight-target">
+    <h2>3. Adjust decision thresholds</h2>
+    <div class="slider-block">
+      <div class="slider-head">
+        <label for="hr-slider">High-Risk threshold — flag as High-Risk when P(High-Risk) ≥ this value</label>
+        <span class="value" id="hr-slider-value">0.30</span>
+      </div>
+      <input type="range" id="hr-slider" min="0.05" max="0.95" step="0.01" value="0.30">
+      <div class="slider-hint">Default: 0.30 (deliberately below 0.50 — a missed pain cry costs more than an unnecessary check)</div>
+    </div>
+    <div class="slider-block">
+      <div class="slider-head">
+        <label for="normal-slider">Normal threshold — clear as Normal when P(Normal) ≥ this value</label>
+        <span class="value" id="normal-slider-value">0.55</span>
+      </div>
+      <input type="range" id="normal-slider" min="0.05" max="0.95" step="0.01" value="0.55">
+      <div class="slider-hint">Default: 0.55 (deliberately above 0.50 — ambiguous cases default to Borderline, not cleared)</div>
+    </div>
+    <button class="reset-btn" id="reset-btn">Reset to model defaults (0.30 / 0.55)</button>
+  </section>
+
+  <section class="card">
+    <h2>4. Reviewer action (human-in-the-loop)</h2>
+    <div class="actions">
+      <button class="action-btn btn-approve" id="approve-btn">✅ Approve</button>
+      <button class="action-btn btn-adjust" id="adjust-btn">✏️ Adjust &amp; Re-flag</button>
+      <button class="action-btn btn-reject" id="reject-btn">❌ Reject</button>
+    </div>
+    <div id="action-message"></div>
+  </section>
+
+</main>
+
+<footer>
+  Demo interface using real held-out test predictions from the CryFlag MVP notebook.
+  For demonstration and threshold-sensitivity exploration only — not a certified clinical interface.
+  It does not replace clinical judgment.
+</footer>
+
+<script>
+/*
+ * Real held-out test-set predictions, pulled directly from
+ * data/processed/test_3state_output.csv (final, fixed model run).
+ * These numbers are not simulated.
+ */
+const SAMPLES = [
+  {
+    id: 1,
+    filename: "643D64AD-B711-469A-AF69-55C0D5D3E30F-1430138545-1.0-m-72-bp.wav",
+    pNormal: 0.047, pBorderline: 0.919, pHighRisk: 0.034,
+    trueLabel: "belly_pain", trueRisk: 3
+  },
+  {
+    id: 2,
+    filename: "79FF400A-97E2-4701-987D-C7C850D5523C-1430089648-1.0-f-48-bu.wav",
+    pNormal: 0.196, pBorderline: 0.644, pHighRisk: 0.160,
+    trueLabel: "burping", trueRisk: 2
+  },
+  {
+    id: 3,
+    filename: "1309B82C-F146-46F0-A723-45345AFA6EA8-1430703937-1.0-f-48-dc.wav",
+    pNormal: 0.106, pBorderline: 0.775, pHighRisk: 0.119,
+    trueLabel: "discomfort", trueRisk: 2
+  },
+  {
+    id: 4,
+    filename: "5728DDD6-149B-412F-A14B-C29B9B5E415F-1432635047-1.0-m-26-hu.wav",
+    pNormal: 0.827, pBorderline: 0.078, pHighRisk: 0.095,
+    trueLabel: "hungry", trueRisk: 1
+  },
+  {
+    id: 5,
+    filename: "D4665929-8695-4655-927F-63F09B2D4CB8-1430726940-1.0-f-26-ti.wav",
+    pNormal: 0.095, pBorderline: 0.674, pHighRisk: 0.231,
+    trueLabel: "tired", trueRisk: 1
+  }
+];
+
+const STATE_NAMES = { 1: "1. Normal", 2: "2. Borderline–Suspicious", 3: "3. High-Risk" };
+
+/*
+ * Byte-for-byte behavioral port of classify.py's assign_state():
+ *
+ *   if p_highrisk >= HIGH_RISK_THRESHOLD:
+ *       return 3, STATE_NAMES[3]
+ *   if p_normal >= NORMAL_THRESHOLD:
+ *       return 1, STATE_NAMES[1]
+ *   return 2, STATE_NAMES[2]
+ *
+ * Same precedence order: High-Risk checked first (patient safety first),
+ * then Normal, else Borderline. Do not reorder these checks.
+ */
+function assignState(pNormal, pBorderline, pHighRisk, highRiskThreshold, normalThreshold) {
+  if (pHighRisk >= highRiskThreshold) {
+    return { stateId: 3, stateName: STATE_NAMES[3] };
+  }
+  if (pNormal >= normalThreshold) {
+    return { stateId: 1, stateName: STATE_NAMES[1] };
+  }
+  return { stateId: 2, stateName: STATE_NAMES[2] };
+}
+
+let selectedSampleId = SAMPLES[0].id;
+
+function friendlyLabel(sample, index) {
+  return `Sample ${index + 1}`;
+}
+
+function shortFilename(filename) {
+  return filename.length > 22 ? filename.slice(0, 10) + "…" + filename.slice(-10) : filename;
+}
+
+function renderCaseGrid() {
+  const grid = document.getElementById("case-grid");
+  grid.innerHTML = "";
+  SAMPLES.forEach((sample, index) => {
+    const btn = document.createElement("button");
+    btn.className = "case-btn" + (sample.id === selectedSampleId ? " active" : "");
+    btn.innerHTML = `${friendlyLabel(sample, index)}<small>${shortFilename(sample.filename)}</small>`;
+    btn.addEventListener("click", () => {
+      selectedSampleId = sample.id;
+      renderAll();
+    });
+    grid.appendChild(btn);
+  });
+}
+
+function renderProbBars(sample) {
+  const container = document.getElementById("prob-bars");
+  const rows = [
+    { label: "P(Normal)", value: sample.pNormal, cls: "fill-normal" },
+    { label: "P(Borderline)", value: sample.pBorderline, cls: "fill-borderline" },
+    { label: "P(High-Risk)", value: sample.pHighRisk, cls: "fill-highrisk" }
+  ];
+  container.innerHTML = rows.map(row => `
+    <div class="prob-row">
+      <div>${row.label}</div>
+      <div class="prob-track"><div class="prob-fill ${row.cls}" style="width:${(row.value * 100).toFixed(1)}%"></div></div>
+      <div class="prob-value">${row.value.toFixed(3)}</div>
+    </div>
+  `).join("");
+}
+
+function badgeClassForState(stateId) {
+  if (stateId === 3) return "badge-flag-highrisk";
+  if (stateId === 1) return "badge-flag-normal";
+  return "badge-flag-borderline";
+}
+
+function renderResult() {
+  const sample = SAMPLES.find(s => s.id === selectedSampleId);
+  const hrThreshold = parseFloat(document.getElementById("hr-slider").value);
+  const normalThreshold = parseFloat(document.getElementById("normal-slider").value);
+
+  document.getElementById("truth-value").textContent =
+    `${sample.trueLabel} (risk level ${sample.trueRisk})`;
+
+  const result = assignState(sample.pNormal, sample.pBorderline, sample.pHighRisk, hrThreshold, normalThreshold);
+  const flagBadge = document.getElementById("flag-badge");
+  flagBadge.className = "badge " + badgeClassForState(result.stateId);
+  document.getElementById("flag-value").textContent = result.stateName;
+}
+
+function renderAll() {
+  renderCaseGrid();
+  const sample = SAMPLES.find(s => s.id === selectedSampleId);
+  renderProbBars(sample);
+  renderResult();
+}
+
+document.getElementById("hr-slider").addEventListener("input", (e) => {
+  document.getElementById("hr-slider-value").textContent = parseFloat(e.target.value).toFixed(2);
+  renderResult();
+});
+
+document.getElementById("normal-slider").addEventListener("input", (e) => {
+  document.getElementById("normal-slider-value").textContent = parseFloat(e.target.value).toFixed(2);
+  renderResult();
+});
+
+document.getElementById("reset-btn").addEventListener("click", () => {
+  document.getElementById("hr-slider").value = 0.30;
+  document.getElementById("normal-slider").value = 0.55;
+  document.getElementById("hr-slider-value").textContent = "0.30";
+  document.getElementById("normal-slider-value").textContent = "0.55";
+  renderResult();
+});
+
+function showActionMessage(text, bgColor, textColor) {
+  const el = document.getElementById("action-message");
+  el.textContent = text;
+  el.style.background = bgColor;
+  el.style.color = textColor;
+  el.classList.add("show");
+}
+
+document.getElementById("approve-btn").addEventListener("click", () => {
+  showActionMessage("✅ Marked as approved by reviewer — logged for audit. (Demo only — not persisted.)", "#e3f6ef", "#0b6b5b");
+});
+
+document.getElementById("reject-btn").addEventListener("click", () => {
+  showActionMessage("❌ Marked as rejected by reviewer — logged for audit. (Demo only — not persisted.)", "#fdecee", "#a4222c");
+});
+
+document.getElementById("adjust-btn").addEventListener("click", () => {
+  const target = document.getElementById("highlight-target");
+  target.scrollIntoView({ behavior: "smooth", block: "center" });
+  target.classList.remove("pulse");
+  // Force reflow so the animation can restart if clicked again.
+  void target.offsetWidth;
+  target.classList.add("pulse");
+  showActionMessage("✏️ Adjust the sliders above, then re-review the recomputed flag.", "#fef3d9", "#8a5c00");
+});
+
+renderAll();
+</script>
+
+</body>
+</html>

@@ -423,3 +423,50 @@ Added an explicit sentence in `data_report.md` and the notebook's Stage 2 sectio
 
 ### Not Applicable / Explicitly Not Done
 - No item from Tasks 1-9 was found inapplicable; all nine were implemented as scoped. The only deviation from the literal instructions is that the child-ID leakage check (Task 5) uses the filename's leading UUID segment as a proxy for "same device/uploader," since the corpus exposes no stronger identifier — this is documented as a limitation of the check itself, not a shortcut.
+
+---
+
+## 2026-07-07 - Interactive Clinical Mockup (MVP/Prototype Bonus Deliverable)
+
+Stage / Action Taken: Built `mockup/index.html`, a single self-contained HTML/CSS/JS product mockup satisfying the course's MVP/Prototype requirement, plus `mockup/verify_logic.py` proving the mockup's threshold logic matches `classify.py` exactly.
+
+Clinical or Technical Justification: The notebook is a data-science artifact; the course brief separately requires a mockup/demo showing input, output, and metrics, with bonus points for letting a reviewer approve, adjust, or reject the model's result. The mockup uses the 5 real held-out test-set rows from `data/processed/test_3state_output.csv` (no simulated numbers) and reimplements `classify.py`'s `assign_state()` precedence logic (High-Risk checked first, then Normal, else Borderline) in plain JavaScript, driven by two live threshold sliders.
+
+### Numerical Parity Verification (Python `assign_state()` vs. JavaScript `assignState()`)
+
+Method: `mockup/verify_logic.py` calls the real, unmodified `classify.py assign_state()` function (temporarily monkeypatching its module-level threshold constants per combination, not reimplementing it) across the 5 real samples x 4 threshold combinations (the default 0.30/0.55, plus 0.20/0.60, 0.50/0.50, and an extreme 0.05/0.95). Separately, the exact `assignState()` function body was extracted verbatim out of `mockup/index.html`'s `<script>` tag with a small Node.js harness and executed against the same 20 (sample, threshold) cases in a stubbed-DOM `vm` sandbox — this runs the real committed JS code, not a hand-traced approximation of it.
+
+| Sample | HR thr | Normal thr | P(Normal) | P(Borderline) | P(High-Risk) | Python result | JS result | Match |
+|---|---:|---:|---:|---:|---:|---|---|:---:|
+| 1 | 0.30 | 0.55 | 0.047 | 0.919 | 0.034 | 2. Borderline–Suspicious | 2. Borderline–Suspicious | ✅ |
+| 1 | 0.20 | 0.60 | 0.047 | 0.919 | 0.034 | 2. Borderline–Suspicious | 2. Borderline–Suspicious | ✅ |
+| 1 | 0.50 | 0.50 | 0.047 | 0.919 | 0.034 | 2. Borderline–Suspicious | 2. Borderline–Suspicious | ✅ |
+| 1 | 0.05 | 0.95 | 0.047 | 0.919 | 0.034 | 2. Borderline–Suspicious | 2. Borderline–Suspicious | ✅ |
+| 2 | 0.30 | 0.55 | 0.196 | 0.644 | 0.160 | 2. Borderline–Suspicious | 2. Borderline–Suspicious | ✅ |
+| 2 | 0.20 | 0.60 | 0.196 | 0.644 | 0.160 | 2. Borderline–Suspicious | 2. Borderline–Suspicious | ✅ |
+| 2 | 0.50 | 0.50 | 0.196 | 0.644 | 0.160 | 2. Borderline–Suspicious | 2. Borderline–Suspicious | ✅ |
+| 2 | 0.05 | 0.95 | 0.196 | 0.644 | 0.160 | 3. High-Risk | 3. High-Risk | ✅ |
+| 3 | 0.30 | 0.55 | 0.106 | 0.775 | 0.119 | 2. Borderline–Suspicious | 2. Borderline–Suspicious | ✅ |
+| 3 | 0.20 | 0.60 | 0.106 | 0.775 | 0.119 | 2. Borderline–Suspicious | 2. Borderline–Suspicious | ✅ |
+| 3 | 0.50 | 0.50 | 0.106 | 0.775 | 0.119 | 2. Borderline–Suspicious | 2. Borderline–Suspicious | ✅ |
+| 3 | 0.05 | 0.95 | 0.106 | 0.775 | 0.119 | 3. High-Risk | 3. High-Risk | ✅ |
+| 4 | 0.30 | 0.55 | 0.827 | 0.078 | 0.095 | 1. Normal | 1. Normal | ✅ |
+| 4 | 0.20 | 0.60 | 0.827 | 0.078 | 0.095 | 1. Normal | 1. Normal | ✅ |
+| 4 | 0.50 | 0.50 | 0.827 | 0.078 | 0.095 | 1. Normal | 1. Normal | ✅ |
+| 4 | 0.05 | 0.95 | 0.827 | 0.078 | 0.095 | 3. High-Risk | 3. High-Risk | ✅ |
+| 5 | 0.30 | 0.55 | 0.095 | 0.674 | 0.231 | 2. Borderline–Suspicious | 2. Borderline–Suspicious | ✅ |
+| 5 | 0.20 | 0.60 | 0.095 | 0.674 | 0.231 | 3. High-Risk | 3. High-Risk | ✅ |
+| 5 | 0.50 | 0.50 | 0.095 | 0.674 | 0.231 | 2. Borderline–Suspicious | 2. Borderline–Suspicious | ✅ |
+| 5 | 0.05 | 0.95 | 0.095 | 0.674 | 0.231 | 3. High-Risk | 3. High-Risk | ✅ |
+
+Result: all 20 of 20 cases match exactly between the Python production function and the extracted, executed JavaScript.
+
+Files Created/Modified:
+- `mockup/index.html` (new) — self-contained interactive mockup
+- `mockup/verify_logic.py` (new) — Python-side ground-truth generator
+- `README.md` — added Colab/Binder-adjacent mockup badge/link and an explanatory section
+- `project_development_log.md` — this entry
+
+Key Outcomes:
+- No headless browser (Playwright/Puppeteer) was installed in this environment; rather than skip in-browser verification or download a full Chromium build, the actual committed JS function was extracted and executed in Node.js against a stubbed DOM — stronger evidence than manual tracing, though short of a real rendered-browser click-test.
+- `classify.py`, `models.py`, `preprocess.py`, and the notebook were not modified for this task, per instructions.

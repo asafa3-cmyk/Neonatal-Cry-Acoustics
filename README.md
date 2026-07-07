@@ -11,6 +11,8 @@
 
 If the interactive buttons above are slow to start, view the notebook with all outputs already rendered here: [nbviewer](https://nbviewer.org/github/asafa3-cmyk/Neonatal-Cry-Acoustics/blob/main/Asaf_Asnin_Neonatal_Cry_AI_MVP.ipynb).
 
+🖥️ **[Try the interactive clinical mockup](https://asafa3-cmyk.github.io/Neonatal-Cry-Acoustics/mockup/)** — approve/reject results and adjust decision thresholds live on real test-set predictions.
+
 An end-to-end medical AI MVP by **Asaf Asnin** that transforms neonatal cry recordings into lightweight acoustic features, trains a CPU-friendly XGBoost model, and maps model probabilities into a simple 3-state clinical support output.
 
 The goal is not to build a heavy model. The goal is to demonstrate the reasoning and engineering behind a responsible medical AI product: clear clinical framing, reproducible data handling, transparent preprocessing, simple modeling, and **honest, pre-registered evaluation** — including reporting plainly that this MVP does not yet meet its own success criteria, and explaining exactly why.
@@ -213,6 +215,18 @@ Threshold logic (unchanged from the original design):
 - Otherwise, assign **Borderline–Suspicious**.
 
 This conservative design favors nurse review for uncertain cases instead of clearing ambiguous cry patterns too quickly.
+
+## Interactive Clinical Mockup (MVP/Prototype Deliverable)
+
+**[Open the live mockup →](https://asafa3-cmyk.github.io/Neonatal-Cry-Acoustics/mockup/)** (single self-contained HTML page, no install, `mockup/index.html` in this repo)
+
+The notebook alone is a data-science artifact, not a product screen. This mockup demonstrates what a nurse-facing review tool built on top of CryFlag could look like, using the 5 **real** held-out test-set predictions from `data/processed/test_3state_output.csv` — no simulated numbers:
+
+- **Case selector** across the 5 real test samples, each showing its actual `P(Normal)` / `P(Borderline)` / `P(High-Risk)` probabilities and ground-truth label.
+- **Live, adjustable decision thresholds** — the High-Risk and Normal sliders recompute the Clinical Flag instantly using the exact same precedence logic as `classify.py`'s `assign_state()` (High-Risk checked first, then Normal, else Borderline), reimplemented in plain JavaScript and verified to match the Python function's output exactly (see `mockup/verify_logic.py` and the parity table in `project_development_log.md`).
+- **Human-in-the-loop review buttons** — Approve / Adjust & Re-flag / Reject — demonstrating that the model's output is a *decision-support suggestion* a clinician can accept, tune, or override, not an autonomous final call.
+
+This directly satisfies the course's MVP/Prototype requirement for a mockup/demo beyond the notebook, including the bonus criterion of letting a reviewer approve, edit (adjust the threshold), or reject the model's result.
 
 ## Literature Review
 
