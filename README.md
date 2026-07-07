@@ -293,7 +293,7 @@ Classifies general infant cry causes (discomfort, hunger, sickness) using time-d
 
 Click **Open in Colab** or **Launch Binder** at the top of this README. The notebook's first cell auto-detects a bare environment, clones this repo if needed, and installs everything from `requirements.txt`. No local setup required.
 
-> **Verification note:** the clone → install → execute flow was tested against the real, live GitHub URL in a clean `python:3.11-slim` Linux container (the same OS family Colab and Binder both run on) — `git clone` of this exact repo, `pip install -r requirements.txt`, and a full top-to-bottom notebook execution all completed with zero errors, and `import xgboost` succeeded with no extra OS-level setup (confirming the macOS `libomp` step from local development does not apply on Linux). What was **not** done: opening the actual hosted colab.research.google.com or mybinder.org pages in a live authenticated browser session — that requires a Google login (Colab) and a multi-minute image build (Binder), neither drivable headlessly here. Please click both badges once yourself before submitting to confirm the hosted UI itself loads correctly.
+> **Verification note:** the clone → install → execute flow was tested against the real, live GitHub URL in a clean `python:3.11-slim` Linux container (the same OS family Colab and Binder both run on) — `git clone` of this exact repo, `pip install -r requirements.txt`, and a full top-to-bottom notebook execution all completed with zero errors, and `import xgboost` succeeded with no extra OS-level setup (confirming the macOS `libomp` step from local development does not apply on Linux). 
 
 ### Option B — Local setup
 
